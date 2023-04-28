@@ -1,4 +1,5 @@
-import { FC } from 'react'
+'use client'
+import { FC, useEffect } from 'react'
 import Link from 'next/link'
 // import { reqWeatherApi } from './api/weatherApi'
 import { log } from 'console'
@@ -21,25 +22,29 @@ interface Data {
   name: string
 }
 
-export async function reqWeatherApi(): Promise<Data> {
-  const weatherApiKey = process.env.NEXT_PUBLIC_WEATHERAPI_KEY
-  const currWeatherParams = '/current.json'
-  const searchAutoComp = '/search.json'
-  const futureForecast = '/future.json'
-  const formattedData = ''
-  const weatherApiQueryURl = `http://api.weatherapi.com/v1${currWeatherParams}?key=${weatherApiKey}&q=Caloocan`
-  const fetchData = await fetch(weatherApiQueryURl)
-  const data = await fetchData.json()
+// export async function reqWeatherApi(): Promise<Data> {
   
-  if (!fetchData.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch data');
-  }
-  return data
-}
+//   const fetchData = await fetch(weatherApiQueryURl)
+//   const data = await fetchData.json()
+  
+//   if (!fetchData.ok) {
+//     // This will activate the closest `error.js` Error Boundary
+//     throw new Error('Failed to fetch data');
+//   }
+//   return data
+// }
 
 export default async function Welcome () {
-  const weather = await reqWeatherApi()
+  const weatherApiKey = process.env.NEXT_PUBLIC_WEATHERAPI_KEY
+  const currWeatherParams = '/current.json'
+  const weatherApiQueryURl = `http://api.weatherapi.com/v1${currWeatherParams}?key=${weatherApiKey}&q=Caloocan`
+  useEffect(() => {
+    fetch(weatherApiQueryURl)
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+    })
+  }, [])
   return (
     <div className='flex flex-col w-full h-screen'>
       <div className='w-full flex flex-row p-3 justify-between items-center'>
@@ -48,7 +53,7 @@ export default async function Welcome () {
             <path d="M5 17H13M5 12H19M11 7H19" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </g>
         </svg>
-        <h1 className='font-bold text-2xl'>{weather.location.name + ' ' + weather.location.region + ', ' + weather.location.country}</h1>
+        <h1 className='font-bold text-2xl'>- -</h1>
         <Link className='w-[5%]' href={'/saved-locations'}>
           <svg className='w-full' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="Navigation / Building_03">
@@ -67,7 +72,7 @@ export default async function Welcome () {
       </div>
 
       <div className='grid place-content-center'>
-        <h1 className='font-bold text-9xl'>{weather.current.temp_c} C</h1>
+        <h1 className='font-bold text-9xl'>37 C</h1>
       </div>
 
       <div className='w-full flex justify-center items-center'>
